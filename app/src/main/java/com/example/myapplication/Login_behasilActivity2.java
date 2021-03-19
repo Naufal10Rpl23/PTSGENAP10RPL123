@@ -1,0 +1,71 @@
+package com.example.myapplication;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import static android.text.Html.fromHtml;
+
+public class Login_behasilActivity2 extends AppCompatActivity {
+
+    EditText TxUsername, TxPassword;
+    Button BtnLogin;
+    DBHelper dbHelper;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login_behasil2);
+
+        TxUsername = (EditText)findViewById((R.id.txUserName));
+        TxPassword = (EditText)findViewById(R.id.txPasword);
+        BtnLogin = (Button) findViewById(R.id.btnLogin);
+
+        dbHelper = new DBHelper(this);
+        TextView tvCreateAccount = (TextView)findViewById(R.id.tvCreateAccount);
+        tvCreateAccount.setText(fromHtml("I dont have account yet " + "</font><font> color= '#3b5998' >create one</font> "));
+
+        tvCreateAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Login_behasilActivity2.this, RegisterMainActivity2. class));
+            }
+        });
+
+        BtnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String Username = TxUsername.getText().toString().trim();
+                String password = TxPassword.getText().toString().trim();
+
+                Boolean res = dbHelper.checkUser(Username, password);
+                if (res == true) {
+                    Toast.makeText(Login_behasilActivity2.this, "Login successfull ", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(Login_behasilActivity2.this, MainActivity.class));
+                }else {
+                    Toast.makeText(Login_behasilActivity2. this, "Login failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public static Spanned fromHTML (String html){
+        Spanned result;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            result = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
+        }else{
+            result = Html.fromHtml(html);
+        }
+        return result;
+    }
+}
